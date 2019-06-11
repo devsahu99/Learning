@@ -1,4 +1,744 @@
+
+
+```python
 import pandas as pd
 import numpy as np
 from sklearn.datasets import load_boston
 import seaborn as sns
+```
+
+
+```python
+# load data
+boston = load_boston()
+X = pd.DataFrame(boston.data, columns=boston.feature_names)
+#X.drop('CHAS', axis=1, inplace=True)
+y = pd.Series(boston.target, name='MEDV')
+
+# inspect data
+X.head()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>CRIM</th>
+      <th>ZN</th>
+      <th>INDUS</th>
+      <th>CHAS</th>
+      <th>NOX</th>
+      <th>RM</th>
+      <th>AGE</th>
+      <th>DIS</th>
+      <th>RAD</th>
+      <th>TAX</th>
+      <th>PTRATIO</th>
+      <th>B</th>
+      <th>LSTAT</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.00632</td>
+      <td>18.0</td>
+      <td>2.31</td>
+      <td>0.0</td>
+      <td>0.538</td>
+      <td>6.575</td>
+      <td>65.2</td>
+      <td>4.0900</td>
+      <td>1.0</td>
+      <td>296.0</td>
+      <td>15.3</td>
+      <td>396.90</td>
+      <td>4.98</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0.02731</td>
+      <td>0.0</td>
+      <td>7.07</td>
+      <td>0.0</td>
+      <td>0.469</td>
+      <td>6.421</td>
+      <td>78.9</td>
+      <td>4.9671</td>
+      <td>2.0</td>
+      <td>242.0</td>
+      <td>17.8</td>
+      <td>396.90</td>
+      <td>9.14</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.02729</td>
+      <td>0.0</td>
+      <td>7.07</td>
+      <td>0.0</td>
+      <td>0.469</td>
+      <td>7.185</td>
+      <td>61.1</td>
+      <td>4.9671</td>
+      <td>2.0</td>
+      <td>242.0</td>
+      <td>17.8</td>
+      <td>392.83</td>
+      <td>4.03</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.03237</td>
+      <td>0.0</td>
+      <td>2.18</td>
+      <td>0.0</td>
+      <td>0.458</td>
+      <td>6.998</td>
+      <td>45.8</td>
+      <td>6.0622</td>
+      <td>3.0</td>
+      <td>222.0</td>
+      <td>18.7</td>
+      <td>394.63</td>
+      <td>2.94</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.06905</td>
+      <td>0.0</td>
+      <td>2.18</td>
+      <td>0.0</td>
+      <td>0.458</td>
+      <td>7.147</td>
+      <td>54.2</td>
+      <td>6.0622</td>
+      <td>3.0</td>
+      <td>222.0</td>
+      <td>18.7</td>
+      <td>396.90</td>
+      <td>5.33</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+# print(boston.DESCR)
+```
+
+
+```python
+df=pd.DataFrame(boston.data, columns=boston.feature_names)
+df.head()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>CRIM</th>
+      <th>ZN</th>
+      <th>INDUS</th>
+      <th>CHAS</th>
+      <th>NOX</th>
+      <th>RM</th>
+      <th>AGE</th>
+      <th>DIS</th>
+      <th>RAD</th>
+      <th>TAX</th>
+      <th>PTRATIO</th>
+      <th>B</th>
+      <th>LSTAT</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.00632</td>
+      <td>18.0</td>
+      <td>2.31</td>
+      <td>0.0</td>
+      <td>0.538</td>
+      <td>6.575</td>
+      <td>65.2</td>
+      <td>4.0900</td>
+      <td>1.0</td>
+      <td>296.0</td>
+      <td>15.3</td>
+      <td>396.90</td>
+      <td>4.98</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0.02731</td>
+      <td>0.0</td>
+      <td>7.07</td>
+      <td>0.0</td>
+      <td>0.469</td>
+      <td>6.421</td>
+      <td>78.9</td>
+      <td>4.9671</td>
+      <td>2.0</td>
+      <td>242.0</td>
+      <td>17.8</td>
+      <td>396.90</td>
+      <td>9.14</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.02729</td>
+      <td>0.0</td>
+      <td>7.07</td>
+      <td>0.0</td>
+      <td>0.469</td>
+      <td>7.185</td>
+      <td>61.1</td>
+      <td>4.9671</td>
+      <td>2.0</td>
+      <td>242.0</td>
+      <td>17.8</td>
+      <td>392.83</td>
+      <td>4.03</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.03237</td>
+      <td>0.0</td>
+      <td>2.18</td>
+      <td>0.0</td>
+      <td>0.458</td>
+      <td>6.998</td>
+      <td>45.8</td>
+      <td>6.0622</td>
+      <td>3.0</td>
+      <td>222.0</td>
+      <td>18.7</td>
+      <td>394.63</td>
+      <td>2.94</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.06905</td>
+      <td>0.0</td>
+      <td>2.18</td>
+      <td>0.0</td>
+      <td>0.458</td>
+      <td>7.147</td>
+      <td>54.2</td>
+      <td>6.0622</td>
+      <td>3.0</td>
+      <td>222.0</td>
+      <td>18.7</td>
+      <td>396.90</td>
+      <td>5.33</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+sns.pairplot(pd.concat([df,y],axis=1))
+```
+
+
+
+
+    <seaborn.axisgrid.PairGrid at 0x23674f97c18>
+
+
+
+
+![png](output_4_1.png)
+
+
+### Matrix plot for all variables
+
+
+```python
+# sns.pairplot(df, size = 4)
+```
+
+
+```python
+import statsmodels.api as sm
+
+X_constant = sm.add_constant(X)
+lin_reg = sm.OLS(y,X_constant).fit()
+lin_reg.summary()
+```
+
+
+
+
+<table class="simpletable">
+<caption>OLS Regression Results</caption>
+<tr>
+  <th>Dep. Variable:</th>          <td>MEDV</td>       <th>  R-squared:         </th> <td>   0.741</td> 
+</tr>
+<tr>
+  <th>Model:</th>                   <td>OLS</td>       <th>  Adj. R-squared:    </th> <td>   0.734</td> 
+</tr>
+<tr>
+  <th>Method:</th>             <td>Least Squares</td>  <th>  F-statistic:       </th> <td>   108.1</td> 
+</tr>
+<tr>
+  <th>Date:</th>             <td>Tue, 11 Jun 2019</td> <th>  Prob (F-statistic):</th> <td>6.72e-135</td>
+</tr>
+<tr>
+  <th>Time:</th>                 <td>14:16:21</td>     <th>  Log-Likelihood:    </th> <td> -1498.8</td> 
+</tr>
+<tr>
+  <th>No. Observations:</th>      <td>   506</td>      <th>  AIC:               </th> <td>   3026.</td> 
+</tr>
+<tr>
+  <th>Df Residuals:</th>          <td>   492</td>      <th>  BIC:               </th> <td>   3085.</td> 
+</tr>
+<tr>
+  <th>Df Model:</th>              <td>    13</td>      <th>                     </th>     <td> </td>    
+</tr>
+<tr>
+  <th>Covariance Type:</th>      <td>nonrobust</td>    <th>                     </th>     <td> </td>    
+</tr>
+</table>
+<table class="simpletable">
+<tr>
+     <td></td>        <th>coef</th>     <th>std err</th>      <th>t</th>      <th>P>|t|</th>  <th>[0.025</th>    <th>0.975]</th>  
+</tr>
+<tr>
+  <th>const</th>   <td>   36.4595</td> <td>    5.103</td> <td>    7.144</td> <td> 0.000</td> <td>   26.432</td> <td>   46.487</td>
+</tr>
+<tr>
+  <th>CRIM</th>    <td>   -0.1080</td> <td>    0.033</td> <td>   -3.287</td> <td> 0.001</td> <td>   -0.173</td> <td>   -0.043</td>
+</tr>
+<tr>
+  <th>ZN</th>      <td>    0.0464</td> <td>    0.014</td> <td>    3.382</td> <td> 0.001</td> <td>    0.019</td> <td>    0.073</td>
+</tr>
+<tr>
+  <th>INDUS</th>   <td>    0.0206</td> <td>    0.061</td> <td>    0.334</td> <td> 0.738</td> <td>   -0.100</td> <td>    0.141</td>
+</tr>
+<tr>
+  <th>CHAS</th>    <td>    2.6867</td> <td>    0.862</td> <td>    3.118</td> <td> 0.002</td> <td>    0.994</td> <td>    4.380</td>
+</tr>
+<tr>
+  <th>NOX</th>     <td>  -17.7666</td> <td>    3.820</td> <td>   -4.651</td> <td> 0.000</td> <td>  -25.272</td> <td>  -10.262</td>
+</tr>
+<tr>
+  <th>RM</th>      <td>    3.8099</td> <td>    0.418</td> <td>    9.116</td> <td> 0.000</td> <td>    2.989</td> <td>    4.631</td>
+</tr>
+<tr>
+  <th>AGE</th>     <td>    0.0007</td> <td>    0.013</td> <td>    0.052</td> <td> 0.958</td> <td>   -0.025</td> <td>    0.027</td>
+</tr>
+<tr>
+  <th>DIS</th>     <td>   -1.4756</td> <td>    0.199</td> <td>   -7.398</td> <td> 0.000</td> <td>   -1.867</td> <td>   -1.084</td>
+</tr>
+<tr>
+  <th>RAD</th>     <td>    0.3060</td> <td>    0.066</td> <td>    4.613</td> <td> 0.000</td> <td>    0.176</td> <td>    0.436</td>
+</tr>
+<tr>
+  <th>TAX</th>     <td>   -0.0123</td> <td>    0.004</td> <td>   -3.280</td> <td> 0.001</td> <td>   -0.020</td> <td>   -0.005</td>
+</tr>
+<tr>
+  <th>PTRATIO</th> <td>   -0.9527</td> <td>    0.131</td> <td>   -7.283</td> <td> 0.000</td> <td>   -1.210</td> <td>   -0.696</td>
+</tr>
+<tr>
+  <th>B</th>       <td>    0.0093</td> <td>    0.003</td> <td>    3.467</td> <td> 0.001</td> <td>    0.004</td> <td>    0.015</td>
+</tr>
+<tr>
+  <th>LSTAT</th>   <td>   -0.5248</td> <td>    0.051</td> <td>  -10.347</td> <td> 0.000</td> <td>   -0.624</td> <td>   -0.425</td>
+</tr>
+</table>
+<table class="simpletable">
+<tr>
+  <th>Omnibus:</th>       <td>178.041</td> <th>  Durbin-Watson:     </th> <td>   1.078</td> 
+</tr>
+<tr>
+  <th>Prob(Omnibus):</th> <td> 0.000</td>  <th>  Jarque-Bera (JB):  </th> <td> 783.126</td> 
+</tr>
+<tr>
+  <th>Skew:</th>          <td> 1.521</td>  <th>  Prob(JB):          </th> <td>8.84e-171</td>
+</tr>
+<tr>
+  <th>Kurtosis:</th>      <td> 8.281</td>  <th>  Cond. No.          </th> <td>1.51e+04</td> 
+</tr>
+</table><br/><br/>Warnings:<br/>[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.<br/>[2] The condition number is large, 1.51e+04. This might indicate that there are<br/>strong multicollinearity or other numerical problems.
+
+
+
+# Checking Model Assumptions
+## Linearity of Model
+
+
+```python
+%matplotlib inline
+%config InlineBackend.figure_format ='retina'
+import seaborn as sns 
+import matplotlib.pyplot as plt
+import statsmodels.stats.api as sms
+sns.set_style('darkgrid')
+sns.mpl.rcParams['figure.figsize'] = (15.0, 9.0)
+
+def linearity_test(model, y):
+    '''
+    Function for visually inspecting the assumption of linearity in a linear regression model.
+    It plots observed vs. predicted values and residuals vs. predicted values.
+    
+    Args:
+    * model - fitted OLS model from statsmodels
+    * y - observed values
+    '''
+    fitted_vals = model.predict()
+    resids = model.resid
+
+    fig, ax = plt.subplots(1,2)
+    
+    sns.regplot(x=fitted_vals, y=y, lowess=True, ax=ax[0], line_kws={'color': 'red'})
+    ax[0].set_title('Observed vs. Predicted Values', fontsize=16)
+    ax[0].set(xlabel='Predicted', ylabel='Observed')
+
+    sns.regplot(x=fitted_vals, y=resids, lowess=True, ax=ax[1], line_kws={'color': 'red'})
+    ax[1].set_title('Residuals vs. Predicted Values', fontsize=16)
+    ax[1].set(xlabel='Predicted', ylabel='Residuals')
+    
+linearity_test(lin_reg, y)
+
+```
+
+
+![png](output_9_0.png)
+
+
+
+```python
+# Mean residuals should be zero
+lin_reg.resid.mean()
+```
+
+
+
+
+    -3.6274891742139895e-14
+
+
+
+## Check for multi-collinearity
+
+
+```python
+from statsmodels.stats.outliers_influence import variance_inflation_factor
+
+vif = [variance_inflation_factor(X_constant.values, i) for i in range(X_constant.shape[1])]
+pd.DataFrame({'vif': vif[1:]}, index=X.columns)
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>vif</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>CRIM</th>
+      <td>1.792192</td>
+    </tr>
+    <tr>
+      <th>ZN</th>
+      <td>2.298758</td>
+    </tr>
+    <tr>
+      <th>INDUS</th>
+      <td>3.991596</td>
+    </tr>
+    <tr>
+      <th>CHAS</th>
+      <td>1.073995</td>
+    </tr>
+    <tr>
+      <th>NOX</th>
+      <td>4.393720</td>
+    </tr>
+    <tr>
+      <th>RM</th>
+      <td>1.933744</td>
+    </tr>
+    <tr>
+      <th>AGE</th>
+      <td>3.100826</td>
+    </tr>
+    <tr>
+      <th>DIS</th>
+      <td>3.955945</td>
+    </tr>
+    <tr>
+      <th>RAD</th>
+      <td>7.484496</td>
+    </tr>
+    <tr>
+      <th>TAX</th>
+      <td>9.008554</td>
+    </tr>
+    <tr>
+      <th>PTRATIO</th>
+      <td>1.799084</td>
+    </tr>
+    <tr>
+      <th>B</th>
+      <td>1.348521</td>
+    </tr>
+    <tr>
+      <th>LSTAT</th>
+      <td>2.941491</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+## Homoscedasticity (equal variance) of residuals
+
+### Potential solutions:
+1. log transformation of dependent variable
+2. using ARCH (auto-regressive conditional heteroscedasticity) models to model the error variance. 
+
+
+
+
+```python
+%matplotlib inline
+%config InlineBackend.figure_format ='retina'
+import seaborn as sns 
+import matplotlib.pyplot as plt
+import statsmodels.stats.api as sms
+sns.set_style('darkgrid')
+sns.mpl.rcParams['figure.figsize'] = (15.0, 9.0)
+
+
+fitted_vals = lin_reg.predict()
+resids = lin_reg.resid
+resids_standardized = lin_reg.get_influence().resid_studentized_internal
+
+fig, ax = plt.subplots(1,2)
+
+sns.regplot(x=fitted_vals, y=resids, lowess=True, ax=ax[0], line_kws={'color': 'red'})
+ax[0].set_title('Residuals vs Fitted', fontsize=16)
+ax[0].set(xlabel='Fitted Values', ylabel='Residuals')
+
+sns.regplot(x=fitted_vals, y=np.sqrt(np.abs(resids_standardized)), lowess=True, ax=ax[1], line_kws={'color': 'red'})
+ax[1].set_title('Scale-Location', fontsize=16)
+ax[1].set(xlabel='Fitted Values', ylabel='sqrt(abs(Residuals))')
+
+
+```
+
+
+
+
+    [Text(0,0.5,'sqrt(abs(Residuals))'), Text(0.5,0,'Fitted Values')]
+
+
+
+
+![png](output_14_1.png)
+
+
+## No autocorrelation of residuals
+
+#### To investigate if autocorrelation is present use ACF plots and Durbin-Watson test.
+
+#### Some notes on the Durbin-Watson test:
+1. the test statistic always has value between 0 and 4
+2. value of 2 means that there is no autocorrelation in the sample
+3. values less than 2 indicate positive autocorrelation, values greater than 2 negative one.
+
+
+```python
+import statsmodels.tsa.api as smt
+
+acf = smt.graphics.plot_acf(lin_reg.resid, lags=40 , alpha=0.05)
+acf.show()
+```
+
+    C:\Users\a560355\AppData\Local\Continuum\anaconda3\lib\site-packages\matplotlib\figure.py:459: UserWarning: matplotlib is currently using a non-GUI backend, so cannot show the figure
+      "matplotlib is currently using a non-GUI backend, "
+    
+
+
+![png](output_16_1.png)
+
+
+
+```python
+from statsmodels.stats.stattools import durbin_watson
+durbin_watson(lin_reg.resid, axis=0)
+```
+
+
+
+
+    1.078375118679725
+
+
+
+# Normality of residuals
+
+
+```python
+sm.ProbPlot(lin_reg.resid).qqplot(line='s');
+plt.title('Q-Q plot');
+
+```
+
+
+![png](output_19_0.png)
+
+
+
+```python
+from scipy import stats
+jb = stats.jarque_bera(lin_reg.resid)
+sw = stats.shapiro(lin_reg.resid)
+ad = stats.anderson(lin_reg.resid, dist='norm')
+    
+print(f'Jarque-Bera test ---- statistic: {jb[0]:.4f}, p-value: {jb[1]}')
+print(f'Shapiro-Wilk test ---- statistic: {sw[0]:.4f}, p-value: {sw[1]:.4f}')
+print(f'Anderson-Darling test ---- statistic: {ad.statistic:.4f}, 5% critical value: {ad.critical_values[2]:.4f}')
+
+```
+
+    Jarque-Bera test ---- statistic: 782.0152, p-value: 0.0
+    Shapiro-Wilk test ---- statistic: 0.9014, p-value: 0.0000
+    Anderson-Darling test ---- statistic: 10.5333, 5% critical value: 0.7810
+    
+
+## Predict on new dataset
+
+
+```python
+Xnew = sm.add_constant(X)
+ypred = lin_reg.predict(Xnew)
+print(ypred)
+```
+
+    0      30.008213
+    1      25.029861
+    2      30.570232
+    3      28.608141
+    4      27.942882
+    5      25.259400
+    6      23.004340
+    7      19.534756
+    8      11.516965
+    9      18.919815
+    10     18.995827
+    11     21.589709
+    12     20.905349
+    13     19.555359
+    14     19.283796
+    15     19.300002
+    16     20.528900
+    17     16.909675
+    18     16.170674
+    19     18.407816
+    20     12.520405
+    21     17.671046
+    22     15.829349
+    23     13.803683
+    24     15.677081
+    25     13.379164
+    26     15.462588
+    27     14.698636
+    28     19.545185
+    29     20.873099
+             ...    
+    476    20.528357
+    477    11.542905
+    478    19.203875
+    479    21.868206
+    480    23.470522
+    481    27.100345
+    482    28.570648
+    483    21.083988
+    484    19.449053
+    485    22.218922
+    486    19.654231
+    487    21.324671
+    488    11.862314
+    489     8.222606
+    490     3.658252
+    491    13.762760
+    492    15.937809
+    493    20.627301
+    494    20.610354
+    495    16.880480
+    496    14.010172
+    497    19.108255
+    498    21.297207
+    499    18.455242
+    500    20.467642
+    501    23.532617
+    502    22.378698
+    503    27.629342
+    504    26.129838
+    505    22.348703
+    Length: 506, dtype: float64
+    
